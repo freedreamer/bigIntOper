@@ -407,6 +407,7 @@ void test_mul()
     printf("12345678987654321 * (-12345678987654321)  = %s\n",result);
 }
 
+//两个正整数相除，...后面打表示余数
 char* divi(const char* left,const char* right)
 {
     char* res = add("0","0");
@@ -433,6 +434,7 @@ char* divi(const char* left,const char* right)
     }
 }
 
+//除法测试
 void test_divi()
 {
     char*result = NULL;
