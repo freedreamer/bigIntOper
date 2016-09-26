@@ -1,0 +1,82 @@
+diff --git a/big_interger_test.c b/big_interger_test.c
+index 6febeed..d27ba35 100644
+--- a/big_interger_test.c
++++ b/big_interger_test.c
+@@ -18,6 +18,8 @@ char* mul_by_x(const char* s,int x);
+ char* mul_internal(const char* left,const char* right);
+ char* mul(const char* left,const char* right);
+ void test_mul();
++char* divi(const char* left,const char* right);
++void test_divi();
+ 
+ //取各个位上的数值
+ int digi_value(const char* point,int pos)
+@@ -196,7 +198,7 @@ int is_less_than(const char* left,const char* right)
+     }
+     */
+     
+-    return (strlen(left) == strlen(right)) && (memcmp(left,right,strlen(left)) < 0) || (strlen(left) < strlen(right));
++    return (strlen(left) == strlen(right)) && (memcmp(left,right,strlen(left)) <= 0) || (strlen(left) < strlen(right));
+ }
+ 
+ //两个正数相减
+@@ -405,11 +407,59 @@ void test_mul()
+     printf("12345678987654321 * (-12345678987654321)  = %s\n",result);
+ }
+ 
++char* divi(const char* left,const char* right)
++{
++    char* res = add("0","0");
++    char* p = add("0","0");
++    while (is_less_than(add(res,right),left))
++    {
++        res = add(res,right);
++        p = add(p,"1");
++    }
++    if (memcmp(res,left,strlen(left)) == 0)
++    {
++        return p;
++    }
++    else
++    {
++        char* remain = NULL;
++        remain = sub(left,res);
++        char* remainSym = "...";
++        char* p1 = calloc(strlen(p) + strlen(remain) + strlen(remainSym) + 1,sizeof(char));
++        memmove(p1,p,strlen(p));
++        memmove(p1 + strlen(p),remainSym,strlen(remainSym));
++        memmove(p1 + strlen(p) + strlen(remainSym),remain,strlen(remain));
++        return p1;
++    }
++}
++
++void test_divi()
++{
++    char*result = NULL;
++    
++    result = divi("15","3");
++    assert(strcmp(result,"5") == 0);
++    free(result);
++    
++    result = divi("2025","15");
++    assert(strcmp(result,"135") == 0);
++    free(result);
++    
++    result = divi("12","5");
++    assert(strcmp(result,"2...2") == 0);
++    free(result);
++    
++    result = divi("2","5");
++    assert(strcmp(result,"0...2") == 0);
++    free(result);
++}
++
+ int main()
+ {  
+     test_add();
+     test_sub();
+     test_mul();
++    test_divi();
+     printf("--------Congratulations!--------\n");
+     return 0;
+ }
