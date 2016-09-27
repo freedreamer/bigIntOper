@@ -18,6 +18,7 @@ char* mul_by_x(const char* s,int x);
 char* mul_internal(const char* left,const char* right);
 char* mul(const char* left,const char* right);
 void test_mul();
+char* duvu_internal(const char* left,const char* right);
 char* divi(const char* left,const char* right);
 void test_divi();
 
@@ -177,6 +178,10 @@ void test_add()
 //取负数
 char* negate(char* s)
 {
+    if ((strlen(s) == 1) && (memcmp(s,"0",strlen(s)) == 0))
+    {
+        return s;
+    }
     char* result = calloc(strlen(s) + 2,sizeof(char));
     result[0] = '-';
     memcpy(result + 1,s,strlen(s) + 1);
@@ -407,8 +412,8 @@ void test_mul()
     printf("12345678987654321 * (-12345678987654321)  = %s\n",result);
 }
 
-//两个正整数相除，...后面打表示余数
-char* divi(const char* left,const char* right)
+//两个正整数相除，取商的整数部分
+char* divi_internal(const char* left,const char* right)
 {
     char* res = add("0","0");
     char* p = add("0","0");
@@ -417,6 +422,7 @@ char* divi(const char* left,const char* right)
         res = add(res,right);
         p = add(p,"1");
     }
+    /*
     if (memcmp(res,left,strlen(left)) == 0)
     {
         return p;
@@ -431,6 +437,28 @@ char* divi(const char* left,const char* right)
         memmove(p1 + strlen(p),remainSym,strlen(remainSym));
         memmove(p1 + strlen(p) + strlen(remainSym),remain,strlen(remain));
         return p1;
+    }
+    */
+    return p;
+}
+
+char* divi(const char* left,const char* right)
+{
+    if (is_negative(left) && is_postive(right))
+    {
+        return negate(divi_internal(left + 1,right));
+    }
+    else if (is_postive(left) && is_negative(right))
+    {
+        return negate(divi_internal(left,right + 1));
+    }
+    else if (is_negative(left) && is_negative(right))
+    {
+        return divi_internal(left + 1,right + 1);
+    }
+    else
+    {
+        return divi_internal(left,right);
     }
 }
 
@@ -448,11 +476,47 @@ void test_divi()
     free(result);
     
     result = divi("12","5");
-    assert(strcmp(result,"2...2") == 0);
+    assert(strcmp(result,"2") == 0);
     free(result);
     
     result = divi("2","5");
-    assert(strcmp(result,"0...2") == 0);
+    assert(strcmp(result,"0") == 0);
+    free(result);
+    
+    result = divi("-15","3");
+    assert(strcmp(result,"-5") == 0);
+    free(result);
+    
+    result = divi("15","-5");
+    assert(strcmp(result,"-3") == 0);
+    free(result);
+    
+    result = divi("-12","-3");
+    assert(strcmp(result,"4") == 0);
+    free(result);
+    
+    result = divi("-2","5");
+    assert(strcmp(result,"0") == 0);
+    free(result);
+    
+    result = divi("2","-5");
+    assert(strcmp(result,"0") == 0);
+    free(result);
+    
+    result = divi("-2","-5");
+    assert(strcmp(result,"0") == 0);
+    free(result);
+    
+    result = divi("-5","2");
+    assert(strcmp(result,"-2") == 0);
+    free(result);
+    
+    result = divi("5","-2");
+    assert(strcmp(result,"-2") == 0);
+    free(result);
+    
+    result = divi("-5","-2");
+    assert(strcmp(result,"2") == 0);
     free(result);
 }
 
